@@ -1,0 +1,1 @@
+m = "models/props_junk/TrafficCone001a.mdl"

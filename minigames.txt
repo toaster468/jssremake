@@ -1,0 +1,7 @@
+"minigames"
+{
+	"base"		"fretta"
+	"title"		"Minigames"
+	"maps"		"^mg_"
+	"menusystem"	"1"
+}

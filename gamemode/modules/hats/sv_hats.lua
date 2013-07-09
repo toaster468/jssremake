@@ -1,0 +1,5 @@
+hook.Add("PlayerSpawn", "hat", function(ply)
+	--local e = ents.Create("TrafficCone")
+	--e:Spawn()
+	--print("Created hat")
+end)

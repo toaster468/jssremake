@@ -1,0 +1,5 @@
+states = {
+	"Pregame",
+	"Game",
+	"Postgame"
+}
