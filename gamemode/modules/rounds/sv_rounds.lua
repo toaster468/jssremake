@@ -11,21 +11,24 @@ function getnext()
 end
 
 hook.Add("PlayerDeath", "checkroundend", function(ply)
-	print("Called")
 	local alive = 0
 	
-	for k, v in pairs(player.GetAll()) do
-		if v:Alive() and v ~= ply then
-			alive = alive + 1
-			print(v:Nick())
-		end
-	end
-	
-	if alive == 0 then
-		currenstate = getnext()
-		hook.Call("RoundChange", GM, currentstate)
-		print("ROUND CHANGED")
+	if team.NumPlayers(2) == 0 and team.NumPlayers(3) > 0 then
+		print("TEAM WON", 3)
+		hook.Call("RoundOver", GM, 3)
+		inprogress = false
+	elseif team.NumPlayers(3) == 0 and team.NumPlayers(2) > 0 then
+		print("TEAM WON", 2)
+		hook.Call("RoundOver", GM, 2)
+		inprogress = false
+	elseif team.NumPlayers(2) == 0 and team.NumPlayers(3) == 0 then
+		hook.Call("RoundOver", GM, 0)
+		inprogress = false
 	else
-		print("NOT CHANGING", alive)
+		inprogress = true
 	end
+end)
+
+hook.Add("RoundOver", "notifyround", function(team)
+	print(team .. " won the round!")
 end)

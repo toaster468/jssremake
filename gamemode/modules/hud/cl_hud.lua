@@ -10,7 +10,9 @@ local moneylabels = {
 	"Dollars",
 	"Llamas",
 	"Twinkies",
-	"Coins"
+	"Coins",
+	"Moneh",
+	"toasters"
 }
 
 msg = "Type 'maplist' or 'songlist' to see a list of the maps or songs printer in your console.\nRemember, you can type 'RTV' in chat to vote for the map change!\n\nHey! Welcome to Jo's Sexy Server. Gamemode and admin mod by Jo The Shmo. Some maps by Pez."
@@ -19,9 +21,16 @@ local current = 1
 
 local money = 0
 
+net.Receive("updatehud", function()
+	money = net.ReadUInt(32)
+end)
+
 timer.Create("changelabel", 15, 0, function()
 	current = math.random(1, #moneylabels)
-	--print("CHANGED", moneylabels[current])
+end)
+
+timer.Create("updatehud", 1, 0, function() 
+	RunConsoleCommand("updatehud")
 end)
 
 surface.CreateFont("hudtext", {
@@ -102,5 +111,5 @@ hook.Add("HUDPaint", "drawhud", function()
 	]]
 	draw.RoundedBox(6, 32, ScrH() - (48 + (32 * 2) + 64  +16), 272, 48, Color(149, 165, 166))
 	draw.RoundedBox(6, 32 + 4, ScrH() + 4 - (48 + (32 * 2) + 64  +16), 272 - 8, 40, Color(106, 97, 101, 200))
-	draw.SimpleText(string.format("%s: %s", moneylabels[current], 100), "hudtext", 32 + (272 / 2), ScrH() - (48 + (32 * 2) + 64  +16) + 24, Color(189, 195, 199), 1, 1)
+	draw.SimpleText(string.format("%s: %s", moneylabels[current], money), "hudtext", 32 + (272 / 2), ScrH() - (48 + (32 * 2) + 64  +16) + 24, Color(189, 195, 199), 1, 1)
 end)

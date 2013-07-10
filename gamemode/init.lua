@@ -8,10 +8,12 @@ whitelist = {
 	--"STEAM_0:0:38664148"
 }
 
+table.foreach(team, print)
+
 --[[
 	Borrowed from DarkRP
 ]]
-local fol = GM.FolderName.."/gamemode/modules/"
+local fol = GM.FolderName.."/gamemode/modules/" 
 local files, folders = file.Find(fol .. "*", "LUA")
 
 for _, folder in SortedPairs(folders, true) do
@@ -38,9 +40,9 @@ end
 
 
 hook.Add("PlayerAuthed", "kickifnotme", function(ply, steamid)
-	if steamid ~= whitelist[1] then
-		ply:Kick("This is a dev server. Get lost.")
-	end
+	--if steamid ~= whitelist[1] then
+	--	ply:Kick("This is a dev server. Get lost.")
+	--end
 end)
 
 

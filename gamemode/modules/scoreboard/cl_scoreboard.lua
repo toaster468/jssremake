@@ -1,10 +1,13 @@
 function GM:ScoreboardShow() 
+
 	open = true
 end
 
 function GM:ScoreboardHide()
 	open = false
 end
+
+playerdata = {}
 
 surface.CreateFont("scoreboard", {
 	font = "Default",
@@ -31,8 +34,31 @@ teams = {
 	"Red"
 }
 
+net.Receive("updatesb", function()
+	playerdata = {}
+	for i = 1, net.ReadUInt(32) do
+		table.insert(playerdata, net.ReadTable())
+		--table.foreach(playerdata[i], print)
+	end
+end)
+
+function findinfo(ply)
+	cur = {}
+
+	for k, v in pairs(playerdata) do
+		if v.name == ply:Nick() then
+			cur = v
+			break
+		end	
+	end
+	
+	return cur
+end
+
 hook.Add("PostDrawHUD", "test", function()
-	if open ~= true then return end
+	if not open then return end
+	RunConsoleCommand("updatesb") 
+	
 	width = ScrW() / 3
 	centerx = (ScrW() + width) / 2
 	
@@ -52,6 +78,7 @@ hook.Add("PostDrawHUD", "test", function()
 	draw.SimpleText("Wins", "ChatFont", width + X - 32, (32 * row) + 16, Color(255, 255, 255), 2, 1)
 	
 	row = 6
+	local i = 1
 	
 	for t = 1, 3 do
 		surface.SetDrawColor(team.GetColor(t))
@@ -59,13 +86,16 @@ hook.Add("PostDrawHUD", "test", function()
 		draw.SimpleText(string.format("%s (%s Players)", teams[t], #team.GetPlayers(t)), "ChatFont", ScrW() - (centerx - width / 2), (32 * row) + 16, Color(255, 255, 255), 1, 1)
 		row = row + 1
 		
+		
 		for k, v in pairs(team.GetPlayers(t)) do
+			local teamcolor = team.GetColor(v:Team())
 			surface.SetDrawColor(Color(149, 165, 166, 160))
 			surface.DrawRect(ScrW() - centerx, 32 * row, width, 32)
-			draw.SimpleText(v:Nick(), "ChatFont", width + 32, (32 * row) + 16, Color(255, 255, 255), 0, 1)
-			draw.SimpleText("100", "ChatFont", width + X - 196, (32 * row) + 16, Color(255, 255, 255), 0, 1)
-			draw.SimpleText("0", "ChatFont", width + X - 32, (32 * row) + 16, Color(255, 255, 255), 2, 1)
+			draw.SimpleText(findinfo(v).name or "", "ChatFont", width + 32, (32 * row) + 16, teamcolor, 0, 1)
+			draw.SimpleText(findinfo(v).money or "", "ChatFont", width + X - 196, (32 * row) + 16, teamcolor, 0, 1)
+			draw.SimpleText(findinfo(v).wins or "", "ChatFont", width + X - 32, (32 * row) + 16, teamcolor, 2, 1)
 			row = row + 1
+			i = i + 1 
 		end
 	end
 end)

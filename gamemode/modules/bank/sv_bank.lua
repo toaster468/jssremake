@@ -5,8 +5,8 @@ concommand.Add("transfer", function(ply, cmd, args)
 		if v:Nick() == args[1] and tonumber(args[2]) ~= nil then
 			AddMoney(v, tonumber(args[2]))
 			AddMoney(v, tonumber(args[2]) * -1)
-			print(tonumber(args[2]) * -1, tonumber(args[2]))
-			print(string.format("Sent 0x%x dollars to %s", tonumber(args[2], "10"), v:Nick()))
+			--print(tonumber(args[2]) * -1, tonumber(args[2]))
+			--print(string.format("Sent 0x%x dollars to %s", tonumber(args[2], "10"), v:Nick()))
 		end
 	end
 	GetMoney(ply)
@@ -16,7 +16,7 @@ concommand.Add("setmoney", function(ply, cmd, args)
 	for k, v in pairs(player.GetAll()) do
 		if v:Nick() == args[1] and tonumber(args[2]) ~= nil and ply:IsAdmin() then
 			SetMoney(v, tonumber(args[2]))
-			print(string.format("Set %s's money to 0x%x dollars", v:Nick(), tonumber(args[2], "10")))
+			print(string.format("Set %s's money to 0x%x dollars", v:Nick(), tonumber(args[2])))
 		end
 	end
 end)
@@ -40,6 +40,13 @@ end
 
 function AddMoney(ply, amt)
 	local cur = GetMoney(ply)
-	print("Adding", cur, amt)
 	SetMoney(ply, amt + cur)
 end
+
+timer.Create("payday", 4, 0, function()
+	for k, v in pairs(player.GetAll()) do
+		if v:Alive() then
+			AddMoney(v, 1)
+		end
+	end
+end)
